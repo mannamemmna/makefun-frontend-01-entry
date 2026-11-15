@@ -50,14 +50,14 @@ export function bounty(b) {
   <section><h2>Description &amp; rules</h2><div class="description">${prose(b.description)}</div></section>`;
 }
 
-/** One leaderboard row: rank, entrant, what it is, its score columns. */
-function lbRow(e) {
+/** One leaderboard row: rank, entrant, what it is, its score columns. Past PAGE rows start hidden. */
+function lbRow(e, i) {
   const cols = e.display ?? {};
   const cells = Object.entries(cols)
     .map(([k, v]) => `<td>${esc(v?.display ?? v ?? '')}</td>`)
     .join('');
   const hidden = e.source_withheld ? '' : `<a class="repo" href="${esc(e.repo_url ?? '')}">repo</a>`;
-  return `<tr><td class="place">${e.rank ?? ''}</td>
+  return `<tr${i >= PAGE ? ' hidden' : ''}><td class="place">${e.rank ?? ''}</td>
     <td class="who"><a href="#/u/${encodeURIComponent(e.handle ?? '')}">${esc(e.handle ?? '')}</a></td>
     <td class="entry">${esc(e.title ?? '')} ${hidden}</td>${cells}
     <td class="cost">${e.cost ? money(e.cost) : ''}</td></tr>`;
@@ -73,5 +73,9 @@ export function leaderboard(lb, slug) {
   <div class="tablewrap"><table class="lb">
     <thead><tr><th scope="col">#</th><th scope="col">Account</th><th scope="col">Entry</th>${cols}<th scope="col">Cost</th></tr></thead>
     <tbody>${rows || '<tr><td colspan="9">No entries yet.</td></tr>'}</tbody>
-  </table></div>`;
+  </table></div>
+  ${PAGE < (lb.entries?.length ?? 0) ? `<button class="more" type="button">Show all ${lb.entries.length}</button>` : ''}`;
 }
+
+/** Rows shown before the "Show all" button loads the rest in place (no rebuild). */
+export const PAGE = 30;

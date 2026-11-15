@@ -96,6 +96,16 @@ function setActive(hash) {
   }
 }
 
+// Long leaderboards: show the first PAGE rows and reveal the rest in place —
+// the button only unhides rows, the page is never rebuilt.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest?.('button.more');
+  if (!btn) return;
+  const rows = btn.closest('main')?.querySelectorAll('table.lb tbody tr') ?? [];
+  rows.forEach((tr) => (tr.hidden = false));
+  btn.remove();
+});
+
 // Warm the ETag minute: hovering or focusing a bounty link fetches its data.
 document.addEventListener('pointerover', (e) => {
   const a = e.target.closest?.('a[href^="#/bounty/"]');

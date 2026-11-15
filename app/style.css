@@ -85,6 +85,8 @@ th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; color: 
 td.place, th:first-child { width: 4em; }
 td.place { font-weight: 800; color: var(--accent-ink); }
 .tablewrap { overflow-x: auto; }
+button.more { display: block; margin: 12px 0; padding: 8px 18px; border-radius: 999px; border: 1px solid var(--accent); background: #fff; color: var(--accent-ink); font-weight: 700; cursor: pointer; }
+button.more:hover { background: var(--accent); color: #fff; }
 td.cost { color: var(--muted); font-variant-numeric: tabular-nums; }
 .entry a.repo { font-size: 13px; margin-left: 6px; }
 

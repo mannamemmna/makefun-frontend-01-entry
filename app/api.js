@@ -1,14 +1,15 @@
 // make.fun's public API client: read-only GETs, open to any origin (CORS).
-// Every answer is cached against its ETag: within the minute a repeat request
-// sends If-None-Match and gets a 304 (no body, no JSON parse), so a view
-// revisited within the minute costs one round trip and nothing else.
-// Tags are keyed to the minute, so the cache lives per path, not per tag.
+// Every answer is cached against its ETag and revalidated with If-None-Match:
+// within the minute the server answers 304 (no body, no JSON parse), past the
+// minute it answers 200 with a new tag even when nothing changed — so a route
+// revisited soon costs one cheap round trip, and one in flight is shared by
+// every caller of the same path (the Promise in `inflight`).
 
 const API = 'https://make.fun/api';
 
-/** path -> Promise of the response (in-flight de-duplication). */
+/** path -> Promise of the parsed answer (in-flight de-duplication). */
 const inflight = new Map();
-/** path -> {data, tag} last known good answer. */
+/** path -> {data, tag} last known good answer for that path. */
 const cache = new Map();
 
 async function get(path) {
@@ -34,11 +35,11 @@ export const getBounties = () => get('/competitions?status=open&activity=times')
 /** One bounty, by its slug. */
 export const getBounty = (slug) => get(`/competitions/${encodeURIComponent(slug)}`);
 
-/** A bounty's leaderboard (the judge view by default). */
+/** A bounty's leaderboard (the judge's view by default). */
 export const getLeaderboard = (slug) => get(`/competitions/${encodeURIComponent(slug)}/leaderboard`);
 
 /** An account's public profile, by handle. */
 export const getProfile = (handle) => get(`/profiles/${encodeURIComponent(handle)}`);
 
-/** Warm the cache for a path without rendering it. */
+/** Warm the cache for a path without rendering it (a pointerover prefetch). */
 export const prefetch = (path) => get(path).catch(() => {});
