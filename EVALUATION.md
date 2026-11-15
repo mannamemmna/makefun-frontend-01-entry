@@ -66,3 +66,11 @@ All run with the kit Node binary (`~/.hermes/tools/node-26.12.1-linux-x64/bin/no
   (provider "custom" must be stated as the real provider); the dry-run could not measure the
   `thinking_reproduces` authored share — verify ≥30% and that `main.ts` has authored lines at
   final bundle time.
+
+## Parent verification + blocker (2026-11-15)
+
+- Screenshots taken by parent from local serve at 1280x800 via CDP (jpeg q85): 1-board.jpg 156 KB, 2-bounty.jpg 79 KB, 3-leaderboard.jpg 70 KB — all verified visually rendering live data.
+- main.ts hardened (d864005): copies only shots.json-named screenshots, fails fast on a missing shot.
+- Full check passes 13/13 locally at d864005 with bundle sha 4404736c... (repo pushed, About set, owner.json + SPDX MIT + README template done).
+- BLOCKER: makefun-frontend-01 is strict-transcripts: it takes NO transcript upload - the gate runs on sealed makefun record recordings, which only stream [CC] / Codex sessions. Neither claude nor codex CLI is installed, and both require credentials not available without the user. Quota unspent; no submission made.
+- NEXT ACTION (needs user): install/auth [CC] or Codex CLI, then run a genuine witnessed improvement pass with record --competition makefun-frontend-01 --source ~/makefun/makefun-frontend-01-entry -- claude -p "<task>" ..., then submit --competition makefun-frontend-01 --repo-url https://github.com/mannamemmna/makefun-frontend-01-entry --commit <sha> --keypair ../makefun-keypair.json. Deadline 2026-11-17T12:30:00Z, quota 3/day.
