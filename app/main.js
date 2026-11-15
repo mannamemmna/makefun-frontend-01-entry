@@ -9,7 +9,8 @@
 // profile views are fetched by import() the first time a route needs them and
 // then cached by the browser. window.__shotReady is false while a route loads
 // and true once its data is on screen, so a screenshot script knows when to
-// capture.
+// capture. Stale routes (a fast typist changing hash mid-fetch) are dropped by
+// a route sequence number, so only the newest route ever paints.
 //
 // The router repaints only the <main> region — the header, nav and footer are
 // static HTML the browser never rebuilds — and the API layer answers repeats
