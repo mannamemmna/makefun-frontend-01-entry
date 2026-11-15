@@ -32,7 +32,7 @@
 // MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-frontend.ts';
@@ -43,7 +43,18 @@ const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 mkdirSync(out, { recursive: true });
 cpSync(join(here, 'app'), join(out, 'app'), { recursive: true });
 mkdirSync(join(out, 'screenshots'), { recursive: true });
-if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), join(out, 'screenshots'), { recursive: true });
+// Copy only the screenshots shots.json names: the gate allows at most 3 images, so a stale
+// screenshot left in the directory must never reach /output (buildDossier refuses and the
+// entry would ship invalid rather than fall back to fewer shots).
+const shots = JSON.parse(readFileSync(join(here, 'shots.json'), 'utf8')) as Array<{ file: string }>;
+if (!existsSync(join(here, 'screenshots'))) throw new Error(`main.ts: screenshots/ is missing — take the ${shots.length} shots named in shots.json first`);
+for (const shot of shots) {
+  if (!existsSync(join(here, 'screenshots', shot.file))) throw new Error(`main.ts: screenshot ${shot.file} named in shots.json is missing`);
+  cpSync(join(here, 'screenshots', shot.file), join(out, 'screenshots', shot.file));
+}
+const shotFiles = readdirSync(join(here, 'screenshots')).filter((f) => !f.startsWith('.'));
+if (shotFiles.length > shots.length) console.warn(`main.ts: screenshots/ holds ${shotFiles.length} files, ${shots.length} named in shots.json — extras are not copied`);
+
 
 // The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes; the others refuse an entry the
 // scorer would refuse (more than 3 screenshots or one over 256 KiB; more than 993 files and directories in app/ or
