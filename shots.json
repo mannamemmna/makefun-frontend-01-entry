@@ -1,0 +1,22 @@
+{
+  "shots": [
+    {
+      "file": "1-board.jpg",
+      "route": "#/",
+      "viewport": "1280x800",
+      "caption": "The bounty board: live pot, entry fee, time left and entries for every open bounty."
+    },
+    {
+      "file": "2-bounty.jpg",
+      "route": "#/bounty/makefun-frontend-01",
+      "viewport": "1280x800",
+      "caption": "A bounty page: rewards table with the live pot, entry fee, deadline and description."
+    },
+    {
+      "file": "3-leaderboard.jpg",
+      "route": "#/bounty/makefun-frontend-01/leaderboard",
+      "viewport": "1280x800",
+      "caption": "That bounty's leaderboard: rank, entry, score columns and house rows shaded."
+    }
+  ]
+}
